@@ -1,94 +1,79 @@
-import React, { Component } from "react";
-
-import Select from "../components/Select";
-import Button from "../components/Button";
+import React, { Component } from 'react';
+import Select from 'react-select';
+import '../../node_modules/react-select/dist/react-select.css';
 
 class Sform extends Component {
-  constructor(props) {
-    super(props);
-
+  constructor() {
+    super();
     this.state = {
-
-      positionOptions:["Accountant", "Auditor", "Tax Accountant"],
-
-      fieldOptions: ["Accounting", "Health Care", "Information Technology"],
-      positionOptionsValues: {
-        "Accounting": [
-          "Accountant", "Auditor", "Tax Accountant"
-        ],
-        "Health Care": [
-          "Nurse Practitioner"
-        ],
-        "Information Technology": [
-          "Data Analyst", "Project Manager", "Python Developer", "Quality Analyst"
-        ]
-      }
+      name: 'React',
+      selectedOption: {},
+      selectedOption2: {}
     };
-    
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
-    
   }
 
-  
-  handleFormSubmit(e) {
-    e.preventDefault();
-    let userData = this.state.newUser;
+  handleChange1 = (selectedOption) => {
+    this.setState({selectedOption});
+  };
 
-    fetch("http://example.com", {
-      method: "POST",
-      body: JSON.stringify(userData),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    }).then(response => {
-      response.json().then(data => {
-        console.log("Successful" + data);
-      });
-    });
+  handleChange2 = (selectedOption) => {
+    this.setState({selectedOption2: selectedOption})
   }
-
-  handleFieldChange(e){
-    // console.log(e.target.value);
-    this.setState({
-      positionOptions: this.state.positionOptionsValues[e.target.value]
-    })
-  }
-
 
   render() {
-    return (
-      <form className="container-fluid select-position-form" onSubmit={this.handleFormSubmit}>
-        <Select
-          title={"Field"}
-          name={"field"}
-          options={this.state.fieldOptions}
-          placeholder={"Select Field"}
-          handleChange={(e) => this.handleFieldChange(e)}
-        />
+    const options1 = [
+      {value: 'one', label: 'Accounting'},
+      {value: 'two', label: 'Health Care'},
+      {value: 'three', label: 'Information Technology'}
+    ];
 
-        <Select
-          title={"Position"}
-          name={"position"}
-          options={this.state.positionOptions}
-          placeholder={"Select Position"}
-          handleChange={this.handleInput}
-        />{" "}
-       
-        <Button
-          action={this.handleFormSubmit}
-          type={"primary"}
-          title={"Submit"}
-          style={buttonStyle}
-        />{" "}
-        {/*Submit */}
-      </form>
+    const options2 = [
+      {value: 'one-a', label: 'Accountant', link: 'one'},
+      {value: 'one-b', label: 'Auditor', link: 'one'},
+      {value: 'one-c', label: 'Tax Accountant', link: 'one'},
+      {value: 'two-a', label: 'Nurse Practitioner', link: 'two'},
+      {value: 'three-a', label: 'Data Analyst', link: 'three'},
+      {value: 'three-b', label: 'Project Manager', link: 'three'},
+      {value: 'three-c', label: 'Python Developer', link: 'three'},
+      {value: 'three-d', label: 'Quality Analyst', link: 'three'}
+    ];
+
+    const filteredOptions = options2.filter((o) => o.link === this.state.selectedOption.value)
+
+    return (
+      <div className="container">
+        <div className="row">
+            <div className="col-md-6 mt-5 mx-auto">
+            <h1 className="h3 mb-3 font-weight-normal">Update your information!</h1>
+               <div>
+                  <div className="form-group">
+                  <label htmlFor="field">Field</label>
+                  <Select
+                    name="form-field-name"
+                    value={this.state.selectedOption.value}
+                    onChange={this.handleChange1}
+                    options={options1}
+                  />
+                  </div>
+                  <div className="form-group">
+                  <label htmlFor="position">Position</label>
+                  <Select
+                    name="form-field-name"
+                    value={this.state.selectedOption2.value}
+                    onChange={this.handleChange2}
+                    options={filteredOptions}
+                  />
+                  </div>
+                  <button type="submit"
+                      className="btn btn-lg btn-primary btn-block">
+                      Submit
+                  </button>
+                </div>
+             </div>
+          </div>
+       </div>
     );
   }
 }
 
-const buttonStyle = {
-  margin: "10px 10px 10px 10px"
-};
-
-export default Sform;
+export default Sform
