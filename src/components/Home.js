@@ -45,7 +45,7 @@ class Home extends Component {
                                 <figcaption>Timed questions</figcaption>
                             </figure>
                         </li>
-                        <li class="feature">
+                        <li className="feature">
                             <figure>
                                 <img src={level} alt="user level"></img>
                                 <figcaption>Questions according to your level</figcaption>

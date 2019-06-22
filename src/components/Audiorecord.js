@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { ReactMic } from 'react-mic';
 import axios from 'axios';
-import Countdown from 'react-countdown-now';
 
 export const register = newUser => {
   return 
@@ -11,7 +10,7 @@ export default class Audiorecord extends Component {
 
   constructor() {
     super();
-    this.state = {record: false, pause: false, questions: [], activeQuestion: 0, timer: 0};
+    this.state = {blobObject: null, record: false, pause: false, questions: [], activeQuestion: 0, timer: 0};
     this.getQuestions();
   }
 
@@ -74,6 +73,14 @@ export default class Audiorecord extends Component {
     this.nextQuestion();
   }
 
+  onData(recordedBlob) {
+    console.log('chunk of real-time data is: ', recordedBlob);
+  }
+
+  onStop= (blobObject) => {
+    this.setState({ blobURL : blobObject.blobURL})
+  }
+
   formatTimer(seconds){
     if(seconds === 0){
       return "03 : 00";
@@ -100,6 +107,8 @@ export default class Audiorecord extends Component {
       buttons = <button type="button" className="btn btn-info btn-lg"  onClick={() => this.btnRecordClick()}> Record</button>
     }
 
+    const { blobURL } = this.state;
+
     return (
       <div className="container">
         
@@ -116,12 +125,16 @@ export default class Audiorecord extends Component {
           <ReactMic
               record={this.state.record}         // defaults -> false.  Set to true to begin recording
               pause={this.state.pause}          // defaults -> false.  Available in React-Mic-Plus upgrade only
-              // className={string}       // provide css class name
-              // onStop={function}        // callback to execute when audio stops recording
-              // onData={function}        // callback to execute when chunk of audio data is available
-              // strokeColor={string}     // sound wave color
+              // className={sound-wave}       // provide css class name
+              onStop={this.onStop}        // callback to execute when audio stops recording
+              onData={this.onData}        // callback to execute when chunk of audio data is available
+              // strokeColor={#000000}     // sound wave color
               // backgroundColor={string} // background color
             />
+        </div>
+
+        <div>
+            <audio ref="audioSource" controls="controls" src={blobURL}></audio>
         </div>
 
         {/* Buttons */}
